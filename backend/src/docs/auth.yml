@@ -1,0 +1,208 @@
+tags:
+  name: Auth
+  description: Authentication
+
+paths:
+  /auth/register:
+    post:
+      summary: Register as user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                  description: must be unique
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: At least 1 letter and 1 number
+              example:
+                firstName: fake
+                lastName: name
+                email: fake@example.com
+                password: password1
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    $ref: '#/components/schemas/AuthTokens'
+        "400":
+          description: Bad Request
+
+  /auth/login:
+    post:
+      summary: Login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              example:
+                email: fake@example.com
+                password: password1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    $ref: '#/components/schemas/AuthTokens'
+        "401":
+          description: Invalid email or password
+
+  /auth/logout:
+    post:
+      summary: Logout
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        "204":
+          description: No content
+        "404":
+          description: Not found
+
+  /auth/refresh-tokens:
+    post:
+      summary: Refresh auth tokens
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        "401":
+          description: Unauthorized
+
+  /auth/forgot-password:
+    post:
+      summary: Forgot password
+      description: An email will be sent to reset password.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "204":
+          description: No content
+        "404":
+          description: Not found
+
+  /auth/reset-password:
+    post:
+      summary: Reset password
+      tags: [Auth]
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+          description: The reset password token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: At least 1 letter and 1 number
+      responses:
+        "204":
+          description: No content
+        "401":
+          description: Password reset failed
+          
+  /auth/verify-email:
+    post:
+      summary: Verify email
+      tags: [Auth]
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+          description: The verify email token
+      responses:
+        "204":
+          description: No content
+        "401":
+          description: Verify email failed

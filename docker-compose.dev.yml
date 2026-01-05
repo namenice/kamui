@@ -1,0 +1,58 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev  # เรียกใช้ stage 'dev' ใน Dockerfile
+    container_name: dev-kamui-backend
+    ports:
+      - "3300:3000"
+    env_file:
+      - .env.dev
+    depends_on:
+      mariadb:
+        condition: service_started
+    networks:
+      - app-network
+    volumes:
+      - ./backend/:/app          # Map โค้ดเข้าไป
+      - /app/node_modules        # กันไม่ให้ node_modules ใน container หาย
+    command: npm run dev         # รัน nodemon
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: dev  # เรียกใช้ stage 'dev' ใน Dockerfile
+    container_name: dev-kamui-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app            # Map โค้ดเข้าไป (Hot Reload)
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - app-network
+
+  mariadb:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=root_secret_password
+      - MARIADB_DATABASE=kamui
+      - MARIADB_USER=kamui_user
+      - MARIADB_PASSWORD=kamui_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data_dev:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mariadb_data_dev:

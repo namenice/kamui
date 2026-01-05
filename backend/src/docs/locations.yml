@@ -1,0 +1,719 @@
+tags:
+  - name: Regions
+    description: Level 1 - Top level location (e.g. Asia)
+  - name: Zones
+    description: Level 2 - Zone within a region (e.g. North, Bangkok)
+  - name: Sites
+    description: Level 3 - Physical site or building
+  - name: Rooms
+    description: Level 4 - Room within a site
+  - name: Racks
+    description: Level 5 - Server rack within a room
+
+paths:
+  # --- REGIONS ---
+  /regions:
+    post:
+      summary: Create a region
+      tags: [Regions]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegionInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+    get:
+      summary: Get all regions
+      tags: [Regions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filter by name
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Region'
+
+  /regions/{regionId}:
+    get:
+      summary: Get a region
+      tags: [Regions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: regionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update a region
+      tags: [Regions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: regionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegionInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a region
+      tags: [Regions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: regionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  # --- ZONES ---
+  /zones:
+    post:
+      summary: Create a zone
+      tags: [Zones]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZoneInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+    get:
+      summary: Get all zones
+      tags: [Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: regionId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Zone'
+
+  /zones/{zoneId}:
+    get:
+      summary: Get a zone
+      tags: [Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: zoneId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+    patch:
+      summary: Update a zone
+      tags: [Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: zoneId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZoneInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+    delete:
+      summary: Delete a zone
+      tags: [Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: zoneId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+  # --- SITES ---
+  /sites:
+    post:
+      summary: Create a site
+      tags: [Sites]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+    get:
+      summary: Get all sites
+      tags: [Sites]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: zoneId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Site'
+
+  /sites/{siteId}:
+    get:
+      summary: Get a site
+      tags: [Sites]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: siteId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+    patch:
+      summary: Update a site
+      tags: [Sites]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: siteId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+    delete:
+      summary: Delete a site
+      tags: [Sites]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: siteId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+  # --- ROOMS ---
+  /rooms:
+    post:
+      summary: Create a room
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+    get:
+      summary: Get all rooms
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: siteId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+
+  /rooms/{roomId}:
+    get:
+      summary: Get a room
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: roomId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+    patch:
+      summary: Update a room
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: roomId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+    delete:
+      summary: Delete a room
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: roomId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+  # --- RACKS ---
+  /racks:
+    post:
+      summary: Create a rack
+      tags: [Racks]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RackInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rack'
+    get:
+      summary: Get all racks
+      tags: [Racks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: roomId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rack'
+
+  /racks/{rackId}:
+    get:
+      summary: Get a rack
+      tags: [Racks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: rackId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rack'
+    patch:
+      summary: Update a rack
+      tags: [Racks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: rackId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RackInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rack'
+    delete:
+      summary: Delete a rack
+      tags: [Racks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: rackId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+components:
+  schemas:
+    # --- Region Schemas ---
+    Region:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+      example:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        name: "Thailand"
+        description: "Main Country"
+    RegionInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      example:
+        name: "Thailand"
+        description: "Main Country"
+
+    # --- Zone Schemas ---
+    Zone:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        regionId:
+          type: string
+          format: uuid
+        region:
+          $ref: '#/components/schemas/Region'
+    ZoneInput:
+      type: object
+      required:
+        - name
+        - regionId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        regionId:
+          type: string
+          format: uuid
+
+    # --- Site Schemas ---
+    Site:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        zoneId:
+          type: string
+          format: uuid
+        zone:
+          $ref: '#/components/schemas/Zone'
+    SiteInput:
+      type: object
+      required:
+        - name
+        - zoneId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        zoneId:
+          type: string
+          format: uuid
+
+    # --- Room Schemas ---
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        siteId:
+          type: string
+          format: uuid
+        site:
+          $ref: '#/components/schemas/Site'
+    RoomInput:
+      type: object
+      required:
+        - name
+        - siteId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        siteId:
+          type: string
+          format: uuid
+
+    # --- Rack Schemas ---
+    Rack:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        unit:
+          type: integer
+          example: 42
+        roomId:
+          type: string
+          format: uuid
+        room:
+          $ref: '#/components/schemas/Room'
+    RackInput:
+      type: object
+      required:
+        - name
+        - roomId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        unit:
+          type: integer
+          default: 42
+        roomId:
+          type: string
+          format: uuid

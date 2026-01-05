@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      # Config สำหรับเชื่อมต่อ MariaDB
+      - DB_HOST=${DB_HOST}        # ชื่อ service ของ database ใน network เดียวกัน
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+    depends_on:
+      mariadb:
+        condition: service_started
+    networks:
+      - app-network
+    # Volumes สำหรับ Hot Reload ในช่วง Dev (ลบออกได้ถ้าใช้ Prod)
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: npm run dev
+
+  mariadb:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=root_secret_password
+      - MARIADB_DATABASE=kamui
+      - MARIADB_USER=kamui_user
+      - MARIADB_PASSWORD=kamui_password
+    ports:
+      - "3306:3306"      
+    volumes:
+      - mariadb_data:/var/lib/mysql # สำคัญมาก! เก็บข้อมูลไว้ใน Volume ถาวร
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:

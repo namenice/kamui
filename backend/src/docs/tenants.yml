@@ -1,0 +1,356 @@
+tags:
+  - name: Tenant Groups
+    description: Classification of tenants (e.g. VIP, Government, Internal)
+  - name: Tenants
+    description: Actual customers or departments who own the hardware
+
+paths:
+  # --- TENANT GROUPS ---
+  /tenant-groups:
+    post:
+      summary: Create a tenant group
+      tags: [Tenant Groups]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantGroupInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantGroup'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+    get:
+      summary: Get all tenant groups
+      tags: [Tenant Groups]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filter by name
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: sort by query in the form of field:desc/asc (ex. name:asc)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+          default: 10
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          default: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TenantGroup'
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  totalResults:
+                    type: integer
+
+  /tenant-groups/{groupId}:
+    get:
+      summary: Get a tenant group
+      tags: [Tenant Groups]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantGroup'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update a tenant group
+      tags: [Tenant Groups]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantGroupInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantGroup'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a tenant group
+      tags: [Tenant Groups]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  # --- TENANTS ---
+  /tenants:
+    post:
+      summary: Create a tenant
+      tags: [Tenants]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+    get:
+      summary: Get all tenants
+      tags: [Tenants]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: tenantGroupId
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+          default: 10
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          default: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tenant'
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  totalResults:
+                    type: integer
+
+  /tenants/{tenantId}:
+    get:
+      summary: Get a tenant
+      tags: [Tenants]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update a tenant
+      tags: [Tenants]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a tenant
+      tags: [Tenants]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    # --- Tenant Group Schemas ---
+    TenantGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+      example:
+        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        name: "Government"
+        description: "Ministry departments"
+    TenantGroupInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      example:
+        name: "Government"
+        description: "Ministry departments"
+
+    # --- Tenant Schemas ---
+    Tenant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        tenantGroupId:
+          type: string
+          format: uuid
+        group:
+          $ref: '#/components/schemas/TenantGroup'
+      example:
+        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+        name: "Ministry of ICT"
+        description: "Main HQ"
+        tenantGroupId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+    TenantInput:
+      type: object
+      required:
+        - name
+        - tenantGroupId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        tenantGroupId:
+          type: string
+          format: uuid
+      example:
+        name: "Ministry of ICT"
+        description: "Main HQ"
+        tenantGroupId: "d290f1ee-6c54-4b01-90e6-d701748f0851"

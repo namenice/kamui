@@ -1,0 +1,640 @@
+tags:
+  - name: Hardware Types
+    description: Master data for hardware categories (e.g. Server, Switch, Storage)
+  - name: Hardwares
+    description: Main inventory assets (Servers, Network Devices)
+  - name: Interface Connections
+    description: Physical cabling and network interfaces (e.g. eth0 to Switch Port)
+
+paths:
+  # --- HARDWARE TYPES ---
+  /hardware-types:
+    post:
+      summary: Create a hardware type
+      tags: [Hardware Types]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HardwareTypeInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HardwareType'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+    get:
+      summary: Get all hardware types
+      tags: [Hardware Types]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: category
+          schema:
+            type: string
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HardwareType'
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  totalResults:
+                    type: integer
+
+  /hardware-types/{typeId}:
+    get:
+      summary: Get a hardware type
+      tags: [Hardware Types]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: typeId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HardwareType'
+    patch:
+      summary: Update a hardware type
+      tags: [Hardware Types]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: typeId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HardwareTypeInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HardwareType'
+    delete:
+      summary: Delete a hardware type
+      tags: [Hardware Types]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: typeId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+  # --- HARDWARES ---
+  /hardwares:
+    post:
+      summary: Create a hardware
+      tags: [Hardwares]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HardwareInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hardware'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+    get:
+      summary: Get all hardwares
+      tags: [Hardwares]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: serialNumber
+          schema:
+            type: string
+        - in: query
+          name: rackId
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: hardwareTypeId
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: tenantId
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, maintenance, failed, offline, reserved, deprecated]
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Hardware'
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  totalResults:
+                    type: integer
+
+  /hardwares/{hardwareId}:
+    get:
+      summary: Get a hardware
+      tags: [Hardwares]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: hardwareId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hardware'
+    patch:
+      summary: Update a hardware
+      tags: [Hardwares]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: hardwareId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HardwareInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hardware'
+    delete:
+      summary: Delete a hardware
+      tags: [Hardwares]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: hardwareId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+  # --- INTERFACE CONNECTIONS ---
+  /interface-connections:
+    post:
+      summary: Create an interface connection
+      tags: [Interface Connections]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceConnectionInput'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterfaceConnection'
+    get:
+      summary: Get all connections
+      tags: [Interface Connections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: hardwareId
+          schema:
+            type: string
+            format: uuid
+          description: Filter interfaces belonging to a specific hardware
+        - in: query
+          name: connectedSwitchId
+          schema:
+            type: string
+            format: uuid
+          description: Filter interfaces connected to a specific switch
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InterfaceConnection'
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  totalResults:
+                    type: integer
+
+  /interface-connections/{connectionId}:
+    get:
+      summary: Get a connection
+      tags: [Interface Connections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: connectionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterfaceConnection'
+    patch:
+      summary: Update a connection
+      tags: [Interface Connections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: connectionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceConnectionInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterfaceConnection'
+    delete:
+      summary: Delete a connection
+      tags: [Interface Connections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: connectionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: No content
+
+components:
+  schemas:
+    # --- Hardware Type ---
+    HardwareType:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+      example:
+        id: "type-uuid"
+        name: "Compute Server"
+        category: "Server"
+        description: "Standard 2U Rack Server"
+    HardwareTypeInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+      example:
+        name: "Compute Server"
+        category: "Server"
+        description: "Standard 2U Rack Server"
+
+    # --- Hardware ---
+    Hardware:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        partNumber:
+          type: string
+        serialNumber:
+          type: string
+        warrantyStartDate:
+          type: string
+          format: date
+        warrantyEndDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [active, maintenance, failed, offline, reserved, deprecated]
+        oobIp:
+          type: string
+        specifications:
+          type: object
+        note:
+          type: string
+        uPosition:
+          type: integer
+        uHeight:
+          type: integer
+        rackId:
+          type: string
+          format: uuid
+        hardwareTypeId:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+      example:
+        id: "hw-uuid"
+        name: "DB-Server-01"
+        manufacturer: "Dell"
+        model: "PowerEdge R740"
+        serialNumber: "CN12345678"
+        status: "active"
+        oobIp: "192.168.10.15"
+        specifications:
+          cpu: "2x Gold 6240"
+          ram: "256GB"
+          storage: "SSD"
+        uPosition: 10
+        uHeight: 2
+        rackId: "rack-uuid"
+        hardwareTypeId: "type-uuid"
+        tenantId: "tenant-uuid"
+    HardwareInput:
+      type: object
+      required:
+        - name
+        - rackId
+        - hardwareTypeId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        partNumber:
+          type: string
+        serialNumber:
+          type: string
+        warrantyStartDate:
+          type: string
+          format: date
+        warrantyEndDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [active, maintenance, failed, offline, reserved, deprecated]
+        oobIp:
+          type: string
+        specifications:
+          type: object
+        note:
+          type: string
+        uPosition:
+          type: integer
+        uHeight:
+          type: integer
+        rackId:
+          type: string
+          format: uuid
+        hardwareTypeId:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+      example:
+        name: "DB-Server-01"
+        manufacturer: "Dell"
+        model: "PowerEdge R740"
+        serialNumber: "CN12345678"
+        status: "active"
+        oobIp: "192.168.10.15"
+        specifications:
+          cpu: "2x Gold 6240"
+          ram: "256GB"
+        uPosition: 10
+        uHeight: 2
+        rackId: "rack-uuid"
+        hardwareTypeId: "type-uuid"
+        tenantId: "tenant-uuid"
+
+    # --- Interface Connection ---
+    InterfaceConnection:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+        speed:
+          type: string
+        type:
+          type: string
+        hardwareId:
+          type: string
+          format: uuid
+        connectedSwitchId:
+          type: string
+          format: uuid
+        connectedPort:
+          type: string
+      example:
+        id: "conn-uuid"
+        name: "eth0"
+        macAddress: "00:1A:2B:3C:4D:5E"
+        ipAddress: "10.0.0.50"
+        speed: "10Gbps"
+        type: "SFP+"
+        hardwareId: "server-uuid"
+        connectedSwitchId: "switch-uuid"
+        connectedPort: "Gi1/0/24"
+    InterfaceConnectionInput:
+      type: object
+      required:
+        - name
+        - hardwareId
+      properties:
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+        speed:
+          type: string
+        type:
+          type: string
+        hardwareId:
+          type: string
+          format: uuid
+        connectedSwitchId:
+          type: string
+          format: uuid
+        connectedPort:
+          type: string
+      example:
+        name: "eth0"
+        macAddress: "00:1A:2B:3C:4D:5E"
+        ipAddress: "10.0.0.50"
+        speed: "10Gbps"
+        type: "SFP+"
+        hardwareId: "server-uuid"
+        connectedSwitchId: "switch-uuid"
+        connectedPort: "Gi1/0/24"

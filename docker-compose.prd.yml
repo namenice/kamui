@@ -8,7 +8,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env.prd
+      - .env.production
     depends_on:
       mariadb:
         condition: service_started
@@ -24,7 +24,7 @@ services:
         - VITE_API_BASE_URL=${VITE_API_BASE_URL}
     container_name: prd-kamui-frontend
     ports:
-      - "80:80"
+      - "81:80"
     depends_on:
       - backend
     networks:

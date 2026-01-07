@@ -1,3 +1,8 @@
 # kamui
 
-docker exec backend-app-1 node seedAdmin.js
+# Migrate DB
+docker exec -it prd-kamui-backend npx sequelize-cli db:migrate
+
+# Create Admin
+docker exec <container-name> node seedAdmin.js
+

@@ -7,5 +7,4 @@ docker-compose --env-file .env.prd -f docker-compose.prd.yml up -d --build
 docker exec -it prd-kamui-backend npx sequelize-cli db:migrate
 
 # Create Admin
-docker exec {container-name} node seedAdmin.js
-
+docker exec prd-kamui-backend node seedAdmin.js

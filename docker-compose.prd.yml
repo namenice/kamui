@@ -5,15 +5,14 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: prd-kamui-backend
+    env_file: .env.prd
     ports:
       - "3000:3000"
-    env_file:
-      - .env.prd
     depends_on:
       mariadb:
         condition: service_started
     networks:
-      - app-network
+      - kamui-network
 
   frontend:
     build:
@@ -28,22 +27,21 @@ services:
     depends_on:
       - backend
     networks:
-      - app-network
+      - kamui-network
 
   mariadb:
     image: mariadb:10.11
     restart: unless-stopped
-    env_file:
-      - .env.prd
+    env_file: .env.prd
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - prd_mariadb_data:/var/lib/mysql
     networks:
-      - app-network
+      - kamui-network
 
 networks:
-  app-network:
+  kamui-network:
     driver: bridge
 
 volumes:

@@ -7,8 +7,8 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql', // สำคัญ: ใช้ 'mysql' เพื่อให้ CLI เรียกใช้ mysql2 driver
+    port: process.env.DB_PORT,
+    dialect: 'mysql',
     dialectOptions: {
       // bigNumberStrings: true
     }
@@ -18,7 +18,7 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME_TEST || process.env.DB_NAME,
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT,
     dialect: 'mysql',
     logging: false
   },
@@ -27,8 +27,8 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT ,
     dialect: 'mysql',
-    logging: false // Production ไม่ควร log query
+    logging: false
   }
 };
